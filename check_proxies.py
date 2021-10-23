@@ -8,15 +8,16 @@ def get_proxy_html():
     response = requests.get(url=URL1)
     return response.text
 
-def parse(resp, proxies_list):
+def parse(resp):
     """Parse web site with free proxies."""
+    proxies_list = []
     soup = BeautifulSoup(resp, 'lxml')
     main_table = soup.find('table', class_='table table-striped table-bordered').find_all('tr')
     for tr in main_table:
         trs = tr.find('td')
         if trs:
             proxies_list.append(trs.text)
-    print(proxies_list)
+    return proxies_list
 
 
 def get_session(proxies):
@@ -38,3 +39,7 @@ def validate_proxy(proxies, session):
             continue
         return valid_proxies
 
+def get_valid_proxies():
+    proxies_list = parse(get_proxy_html())
+    valid_proxies = validate_proxy(proxies_list, get_session(proxies_list))
+    return valid_proxies
