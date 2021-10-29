@@ -3,12 +3,15 @@ import requests
 from bs4 import BeautifulSoup
 
 URL = 'http://www.w3.org/TR/html4/strict.dtd'
+
+
 def get_proxy_html():
     URL1 = 'https://free-proxy-list.net/'
     response = requests.get(url=URL1)
     return response.text
 
-def parse(resp):
+
+def parse_proxies(resp):
     """Parse web site with free proxies."""
     proxies_list = []
     soup = BeautifulSoup(resp, 'lxml')
@@ -33,13 +36,14 @@ def validate_proxy(proxies, session):
         s = get_session(proxies)
         try:
             proxy = s.get("http://icanhazip.com", timeout=1.5).text.strip()
-            if proxy:
+            if proxy and len(proxy) < 70:
                 valid_proxies.append(proxy)
         except Exception as e:
             continue
         return valid_proxies
 
+
 def get_valid_proxies():
-    proxies_list = parse(get_proxy_html())
+    proxies_list = parse_proxies(get_proxy_html())
     valid_proxies = validate_proxy(proxies_list, get_session(proxies_list))
     return valid_proxies
