@@ -20,17 +20,6 @@ def get_html(valid_proxies, url, headers=None):
     return response.text
 
 
-def get_session(valid_proxies, url, headers):
-    session = requests.Session()
-    proxy = random.choice(valid_proxies)
-    if "http" in url:
-        session.proxies = {"http": proxy}
-    else:
-        session.proxies = {"https": proxy}
-    response2 = session.get(url=url, headers=headers)
-    return response2
-
-
 def main_parser(html):
     """Main parser, parse web shop."""
     HEADER = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
@@ -51,10 +40,8 @@ def main_parser(html):
 
                 url = url.strip()
                 if url:
-                    print(url)
-                    response2 = get_session(ch_p.parse_proxies(ch_p.get_proxy_html()), url, HEADER)
-                    print(response2.text)
+                    response2 = get_html(ch_p.call_all(), url, HEADER)
+                    print(response2)
 
 
-
-main_parser(get_html(ch_p.parse_proxies(ch_p.get_proxy_html()), URL, HEADERS))
+main_parser(get_html(ch_p.call_all(), URL, HEADERS))
